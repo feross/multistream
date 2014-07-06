@@ -1,8 +1,10 @@
-# multistream [![travis](https://img.shields.io/travis/feross/multistream.svg)](https://travis-ci.org/feross/multistream) [![npm](https://img.shields.io/npm/v/multistream.svg)](https://npmjs.org/package/multistream) [![gittip](https://img.shields.io/gittip/feross.svg)](https://www.gittip.com/feross/)
+# multistream [![travis](https://img.shields.io/travis/feross/multistream.svg)](https://travis-ci.org/feross/multistream) [![npm](https://img.shields.io/npm/v/multistream.svg)](https://npmjs.org/package/multistream)
 
 #### A stream that emits multiple other streams one after another (streams2)
 
-![streams](https://raw.githubusercontent.com/feross/multistream/master/img.jpg)
+[![browser support](https://ci.testling.com/feross/multistream.png)](https://ci.testling.com/feross/multistream)
+
+![cat](https://raw.githubusercontent.com/feross/multistream/master/img.jpg)
 
 Simple, robust streams2 version of [combined-stream](https://www.npmjs.org/package/combined-stream). Allows you to combine multiple streams into a single stream. When the first stream ends, the next one starts, and so on, until all streams are consumed.
 
