@@ -1,13 +1,32 @@
 var concat = require('concat-stream')
-var fs = require('fs')
+var inherits = require('inherits')
 var MultiStream = require('../')
+var stream = require('stream')
 var test = require('tape')
 
-test('combine fs streams', function (t) {
+inherits(StringStream, stream.Readable)
+
+function StringStream (str) {
+  stream.Readable.call(this)
+  this._str = str
+}
+
+StringStream.prototype._read = function(n) {
+  if (!this.ended) {
+    var self = this
+    process.nextTick(function () {
+      self.push(new Buffer(self._str))
+      self.push(null)
+    })
+    this.ended = true
+  }
+}
+
+test('combine streams', function (t) {
   var streams = [
-    fs.createReadStream(__dirname + '/numbers/1.txt'),
-    fs.createReadStream(__dirname + '/numbers/2.txt'),
-    fs.createReadStream(__dirname + '/numbers/3.txt')
+    new StringStream('1'),
+    new StringStream('2'),
+    new StringStream('3')
   ]
 
   MultiStream(streams)
