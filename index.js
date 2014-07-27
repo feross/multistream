@@ -19,8 +19,8 @@ function MultiStream (streams, opts) {
   this._next()
 }
 
-MultiStream.obj = function(streams) {
-  return new MultiStream(streams, {objectMode:true, highWaterMark:16})
+MultiStream.obj = function (streams) {
+  return new MultiStream(streams, { objectMode: true, highWaterMark: 16 })
 }
 
 MultiStream.prototype._read = function () {
@@ -28,7 +28,7 @@ MultiStream.prototype._read = function () {
   this._forward()
 }
 
-MultiStream.prototype._forward = function() {
+MultiStream.prototype._forward = function () {
   if (this._forwarding || !this._drained) return
   this._forwarding = true
 
@@ -40,11 +40,11 @@ MultiStream.prototype._forward = function() {
   this._forwarding = false
 }
 
-MultiStream.prototype.destroy = function(err) {
+MultiStream.prototype.destroy = function (err) {
   if (this.destroyed) return
   this.destroyed = true
 
-  this._queue.forEach(function(stream) {
+  this._queue.forEach(function (stream) {
     if (stream.destroy) stream.destroy()
   })
 
