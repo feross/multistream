@@ -9,8 +9,22 @@ function MultiStream (streams, opts) {
   if (!(this instanceof MultiStream)) return new MultiStream(streams, opts)
   stream.Readable.call(this, opts)
 
+  this.destroyed = false
+
   this._queue = streams
   this._next()
+}
+
+MultiStream.prototype.destroy = function(err) {
+  if (this.destroyed) return
+  this.destroyed = true
+
+  this._queue.forEach(function(stream) {
+    if (stream.destroy) stream.destroy()
+  })
+
+  if (err) this.emit('error', err)
+  this.emit('close')
 }
 
 MultiStream.prototype._read = function () {}
@@ -43,6 +57,6 @@ MultiStream.prototype._next = function () {
   }
 
   function onError (err) {
-    self.emit('error', err)
+    self.destroy(err)
   }
 }
