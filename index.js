@@ -13,6 +13,10 @@ function MultiStream (streams, opts) {
   this._next()
 }
 
+MultiStream.obj = function(streams) {
+  return new MultiStream(streams, {objectMode:true, highWaterMark:16})
+}
+
 MultiStream.prototype._read = function () {}
 
 MultiStream.prototype._next = function () {
