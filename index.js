@@ -41,6 +41,7 @@ MultiStream.prototype._next = function () {
   stream.on('readable', onReadable)
   stream.on('end', onEnd)
   stream.on('error', onError)
+  stream.on('close', onClose)
 
   function onReadable () {
     var chunk
@@ -49,10 +50,17 @@ MultiStream.prototype._next = function () {
     }
   }
 
+  function onClose () {
+    if (!stream._readableState.ended) {
+      self.destroy()
+    }
+  }
+
   function onEnd () {
     stream.removeListener('readable', onReadable)
     stream.removeListener('end', onEnd)
     stream.removeListener('error', onError)
+    stream.removeListener('close', onClose)
     self._next()
   }
 
