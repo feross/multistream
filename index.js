@@ -9,11 +9,13 @@ function MultiStream (streams, opts) {
   if (!(this instanceof MultiStream)) return new MultiStream(streams, opts)
   stream.Readable.call(this, opts)
 
+  this.destroyed = false
+
   this._drained = false
   this._forwarding = false
   this._current = null
-
   this._queue = streams
+
   this._next()
 }
 
@@ -38,6 +40,18 @@ MultiStream.prototype._forward = function() {
   this._forwarding = false
 }
 
+MultiStream.prototype.destroy = function(err) {
+  if (this.destroyed) return
+  this.destroyed = true
+
+  this._queue.forEach(function(stream) {
+    if (stream.destroy) stream.destroy()
+  })
+
+  if (err) this.emit('error', err)
+  this.emit('close')
+}
+
 MultiStream.prototype._next = function () {
   var self = this
   var stream = this._queue.shift()
@@ -52,19 +66,27 @@ MultiStream.prototype._next = function () {
   stream.on('readable', onReadable)
   stream.on('end', onEnd)
   stream.on('error', onError)
+  stream.on('close', onClose)
 
   function onReadable () {
     self._forward()
+  }
+
+  function onClose () {
+    if (!stream._readableState.ended) {
+      self.destroy()
+    }
   }
 
   function onEnd () {
     stream.removeListener('readable', onReadable)
     stream.removeListener('end', onEnd)
     stream.removeListener('error', onError)
+    stream.removeListener('close', onClose)
     self._next()
   }
 
   function onError (err) {
-    self.emit('error', err)
+    self.destroy(err)
   }
 }
