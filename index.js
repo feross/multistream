@@ -43,7 +43,8 @@ MultiStream.prototype._forward = function () {
 MultiStream.prototype.destroy = function (err) {
   if (this.destroyed) return
   this.destroyed = true
-
+  
+  if (this._current && this._current.destroy) this._current.destroy()
   this._queue.forEach(function (stream) {
     if (stream.destroy) stream.destroy()
   })
@@ -79,6 +80,7 @@ MultiStream.prototype._next = function () {
   }
 
   function onEnd () {
+    self._current = null
     stream.removeListener('readable', onReadable)
     stream.removeListener('end', onEnd)
     stream.removeListener('error', onError)
