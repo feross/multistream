@@ -9,11 +9,30 @@ function MultiStream (streams, opts) {
   if (!(this instanceof MultiStream)) return new MultiStream(streams, opts)
   stream.Readable.call(this, opts)
 
+  this._drained = false
+  this._forwarding = false
+  this._current = null
+
   this._queue = streams
   this._next()
 }
 
-MultiStream.prototype._read = function () {}
+MultiStream.prototype._read = function () {
+  this._drained = true
+  this._forward()
+}
+
+MultiStream.prototype._forward = function() {
+  if (this._forwarding || !this._drained) return
+  this._forwarding = true
+
+  var chunk
+  while ((chunk = this._current.read()) !== null) {
+    this._drained = this.push(chunk)
+  }
+
+  this._forwarding = false
+}
 
 MultiStream.prototype._next = function () {
   var self = this
@@ -24,15 +43,14 @@ MultiStream.prototype._next = function () {
     return
   }
 
+  this._current = stream
+
   stream.on('readable', onReadable)
   stream.on('end', onEnd)
   stream.on('error', onError)
 
   function onReadable () {
-    var chunk
-    while (chunk = stream.read()) {
-      self.push(chunk)
-    }
+    self._forward()
   }
 
   function onEnd () {
