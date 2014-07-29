@@ -18,7 +18,7 @@ npm install multistream
 
 ### usage
 
-Use `multistream` is like this:
+Use `multistream` like this:
 
 ```js
 var MultiStream = require('multistream')
