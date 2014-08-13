@@ -38,3 +38,24 @@ test('combine streams', function (t) {
       t.end()
     }))
 })
+
+test('lazy stream creation', function (t) {
+  var streams = [
+    new StringStream('1'),
+    function() {
+      return new StringStream('2')
+    },
+    function() {
+      return new StringStream('3')
+    }
+  ]
+
+  MultiStream(streams)
+    .on('error', function (err) {
+      t.fail(err)
+    })
+    .pipe(concat(function (data) {
+      t.equal(data.toString(), '123')
+      t.end()
+    }))
+})
