@@ -57,6 +57,8 @@ MultiStream.prototype._next = function () {
   var self = this
   var stream = this._queue.shift()
 
+  if (typeof stream === 'function') stream = stream()
+
   if (!stream) {
     this.push(null)
     return
