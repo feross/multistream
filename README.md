@@ -34,15 +34,15 @@ var streams = [
 MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
-If you do not want to create the streams right away wrap them in a function
+To lazily create the streams, wrap them in a function:
 
 ```js
 var streams = [
   fs.createReadStream(__dirname + '/numbers/1.txt'),
-  function() {
+  function () { // will be executed when the stream is active
     return fs.createReadStream(__dirname + '/numbers/2.txt')
   },
-  function() { // will be executed when the stream is active
+  function () { // same
     return fs.createReadStream(__dirname + '/numbers/3.txt')
   }
 ]
