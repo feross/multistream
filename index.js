@@ -64,7 +64,7 @@ MultiStream.prototype._next = function () {
     return
   }
 
-  this._current = stream
+  this._current = toStreams2(stream)
 
   stream.on('readable', onReadable)
   stream.on('end', onEnd)
@@ -93,4 +93,14 @@ MultiStream.prototype._next = function () {
   function onError (err) {
     self.destroy(err)
   }
+}
+
+function toStreams2 (s) {
+  if (s._readableState) return s
+  
+  var wrap = new stream.Readable().wrap(s)
+  if (s.destroy) {
+    wrap.destroy = s.destroy.bind(s)
+  }
+  return wrap
 }
