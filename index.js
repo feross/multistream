@@ -57,14 +57,13 @@ MultiStream.prototype._next = function () {
   var self = this
   var stream = this._queue.shift()
 
-  if (typeof stream === 'function') stream = stream()
+  if (typeof stream === 'function') stream = toStreams2(stream())
 
   if (!stream) {
     this.push(null)
     return
   }
 
-  stream = toStreams2(stream)
   this._current = stream
 
   stream.on('readable', onReadable)
@@ -97,8 +96,7 @@ MultiStream.prototype._next = function () {
 }
 
 function toStreams2 (s) {
-  if (typeof s === 'function') return s
-  if (s._readableState) return s
+  if (!s || typeof s === 'function' || s._readableState) return s
 
   var wrap = new stream.Readable().wrap(s)
   if (s.destroy) {
