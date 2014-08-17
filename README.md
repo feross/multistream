@@ -50,6 +50,11 @@ var streams = [
 MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
+### contributors
+
+- [Feross Aboukhadijeh](http://feross.org)
+- [Mathias Buus](https://github.com/mafintosh/)
+
 ### license
 
 MIT. Copyright (c) [Feross Aboukhadijeh](http://feross.org).
