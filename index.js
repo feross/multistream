@@ -14,7 +14,7 @@ function MultiStream (streams, opts) {
   this._drained = false
   this._forwarding = false
   this._current = null
-  this._queue = streams
+  this._queue = streams.map(toStreams2)
 
   this._next()
 }
@@ -64,7 +64,8 @@ MultiStream.prototype._next = function () {
     return
   }
 
-  this._current = toStreams2(stream)
+  stream = toStreams2(stream)
+  this._current = stream
 
   stream.on('readable', onReadable)
   stream.on('end', onEnd)
@@ -96,8 +97,9 @@ MultiStream.prototype._next = function () {
 }
 
 function toStreams2 (s) {
+  if (typeof s === 'function') return s
   if (s._readableState) return s
-  
+
   var wrap = new stream.Readable().wrap(s)
   if (s.destroy) {
     wrap.destroy = s.destroy.bind(s)
