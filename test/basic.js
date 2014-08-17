@@ -1,4 +1,5 @@
 var concat = require('concat-stream')
+var through = require('through')
 var inherits = require('inherits')
 var MultiStream = require('../')
 var stream = require('stream')
@@ -37,6 +38,27 @@ test('combine streams', function (t) {
       t.equal(data.toString(), '123')
       t.end()
     }))
+})
+
+test('combine streams (classic)', function(t) {
+  var streams = [
+    through(),
+    through(),
+    through()
+  ]
+
+  MultiStream(streams)
+    .on('error', function (err) {
+      t.fail(err)
+    })
+    .pipe(concat(function (data) {
+      t.equal(data.toString(), '123')
+      t.end()
+    }))
+
+  streams[0].end('1')
+  streams[1].end('2')
+  streams[2].end('3')
 })
 
 test('lazy stream creation', function (t) {
