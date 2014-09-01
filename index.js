@@ -43,7 +43,7 @@ MultiStream.prototype._forward = function () {
 MultiStream.prototype.destroy = function (err) {
   if (this.destroyed) return
   this.destroyed = true
-  
+
   if (this._current && this._current.destroy) this._current.destroy()
   this._queue.forEach(function (stream) {
     if (stream.destroy) stream.destroy()
@@ -58,6 +58,11 @@ MultiStream.prototype._next = function () {
   var stream = this._queue.shift()
 
   if (typeof stream === 'function') stream = toStreams2(stream())
+
+  if (Array.isArray(stream)) {
+    stream.forEach(this.push, this);
+    return self._next()
+  }
 
   if (!stream) {
     this.push(null)
@@ -96,7 +101,7 @@ MultiStream.prototype._next = function () {
 }
 
 function toStreams2 (s) {
-  if (!s || typeof s === 'function' || s._readableState) return s
+  if (!s || typeof s === 'function' || s._readableState || Array.isArray(s)) return s
 
   var wrap = new stream.Readable().wrap(s)
   if (s.destroy) {
