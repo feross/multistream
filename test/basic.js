@@ -62,3 +62,19 @@ test('lazy stream creation', function (t) {
       t.end()
     }))
 })
+
+test('combine with array', function (t) {
+  var streams = [
+    ['1','2','3'],
+    ['4','5','6']
+  ]
+
+  MultiStream(streams)
+    .on('error', function (err) {
+      t.fail(err)
+    })
+    .pipe(concat(function (data) {
+      t.equal(data.toString(), '123456')
+      t.end()
+    }))
+})

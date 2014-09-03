@@ -50,6 +50,20 @@ var streams = [
 MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
+You can pass arrays of elements that should be inserted in final stream
+
+```js
+var streams = [
+  fs.createReadStream(__dirname + '/numbers/1.txt'),
+  ['Bird', 'bird'],
+  fs.createReadStream(__dirname + '/numbers/2.txt'),
+  function () { return ['Bird', 'is', 'the', 'word'] },
+  fs.createReadStream(__dirname + '/numbers/3.txt')
+]
+
+MultiStream(streams).pipe(process.stdout) // => 1Birdbird2birdistheword3
+```
+
 ### contributors
 
 - [Feross Aboukhadijeh](http://feross.org)
