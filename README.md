@@ -22,7 +22,6 @@ Use `multistream` like this:
 
 ```js
 var MultiStream = require('multistream')
-var concat = require('concat-stream')
 var fs = require('fs')
 
 var streams = [
