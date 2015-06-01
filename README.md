@@ -1,4 +1,11 @@
-# multistream [![travis](https://img.shields.io/travis/feross/multistream.svg)](https://travis-ci.org/feross/multistream) [![npm](https://img.shields.io/npm/v/multistream.svg)](https://npmjs.org/package/multistream)
+# multistream [![travis][travis-image]][travis-url] [![npm][npm-image]][npm-url] [![downloads][downloads-image]][downloads-url]
+
+[travis-image]: https://img.shields.io/travis/feross/multistream.svg?style=flat
+[travis-url]: https://travis-ci.org/feross/multistream
+[npm-image]: https://img.shields.io/npm/v/multistream.svg?style=flat
+[npm-url]: https://npmjs.org/package/multistream
+[downloads-image]: https://img.shields.io/npm/dm/multistream.svg?style=flat
+[downloads-url]: https://npmjs.org/package/multistream
 
 #### A stream that emits multiple other streams one after another (streams2)
 
