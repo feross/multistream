@@ -13,7 +13,8 @@
     "concat-stream": "^1.4.6",
     "string-to-stream": "^1.0.0",
     "tape": "^4.0.0",
-    "through": "^2.3.4"
+    "through": "^2.3.4",
+    "zuul": "^3.0.0"
   },
   "homepage": "https://github.com/feross/multistream",
   "keywords": [
@@ -38,22 +39,9 @@
     "url": "git://github.com/feross/multistream.git"
   },
   "scripts": {
-    "test": "tape test/*.js"
-  },
-  "testling": {
-    "files": "test/*.js",
-    "browsers": [
-      "ie/9..latest",
-      "chrome/25..latest",
-      "chrome/canary",
-      "firefox/20..latest",
-      "firefox/nightly",
-      "safari/6..latest",
-      "opera/15.0..latest",
-      "opera/next",
-      "ipad/6.0..latest",
-      "iphone/6.0..latest",
-      "android-browser/4.2..latest"
-    ]
+    "test": "npm run test-node && npm run test-browser",
+    "test-browser": "zuul -- test/*.js",
+    "test-browser-local": "zuul --local -- test/*.js",
+    "test-node": "tape test/*.js"
   }
 }
