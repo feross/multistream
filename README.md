@@ -2,7 +2,7 @@
 
 #### A stream that emits multiple other streams one after another (streams2)
 
-[![browser support](https://ci.testling.com/feross/multistream.png)](https://ci.testling.com/feross/multistream)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/magnet-uri.svg)](https://saucelabs.com/u/magnet-uri)
 
 ![cat](https://raw.githubusercontent.com/feross/multistream/master/img.jpg)
 
