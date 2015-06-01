@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "concat-stream": "^1.4.6",
+    "standard": "^4.0.0",
     "string-to-stream": "^1.0.0",
     "tape": "^4.0.0",
     "through": "^2.3.4",
@@ -39,7 +40,7 @@
     "url": "git://github.com/feross/multistream.git"
   },
   "scripts": {
-    "test": "npm run test-node && npm run test-browser",
+    "test": "standarD && npm run test-node && npm run test-browser",
     "test-browser": "zuul -- test/*.js",
     "test-browser-local": "zuul --local -- test/*.js",
     "test-node": "tape test/*.js"

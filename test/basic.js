@@ -6,9 +6,9 @@ var through = require('through')
 
 test('combine streams', function (t) {
   var streams = [
-    new str('1'),
-    new str('2'),
-    new str('3')
+    str('1'),
+    str('2'),
+    str('3')
   ]
 
   new MultiStream(streams)
@@ -21,7 +21,7 @@ test('combine streams', function (t) {
     }))
 })
 
-test('combine streams (classic)', function(t) {
+test('combine streams (classic)', function (t) {
   var streams = [
     through(),
     through(),
@@ -44,12 +44,12 @@ test('combine streams (classic)', function(t) {
 
 test('lazy stream creation', function (t) {
   var streams = [
-    new str('1'),
-    function() {
-      return new str('2')
+    str('1'),
+    function () {
+      return str('2')
     },
-    function() {
-      return new str('3')
+    function () {
+      return str('3')
     }
   ]
 
