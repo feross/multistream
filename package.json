@@ -40,7 +40,7 @@
     "url": "git://github.com/feross/multistream.git"
   },
   "scripts": {
-    "test": "standarD && npm run test-node && npm run test-browser",
+    "test": "standard && npm run test-node && npm run test-browser",
     "test-browser": "zuul -- test/*.js",
     "test-browser-local": "zuul --local -- test/*.js",
     "test-node": "tape test/*.js"
