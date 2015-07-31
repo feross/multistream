@@ -62,3 +62,23 @@ test('lazy stream creation', function (t) {
       t.end()
     }))
 })
+
+test('lazy stream via generator', function (t) {
+  var count = 0
+  var streams = function () {
+    if (count > 2) {
+      return null
+    }
+    count++
+    return str(count.toString())
+  }
+
+  new MultiStream(streams)
+    .on('error', function (err) {
+      t.fail(err)
+    })
+    .pipe(concat(function (data) {
+      t.equal(data.toString(), '123')
+      t.end()
+    }))
+})

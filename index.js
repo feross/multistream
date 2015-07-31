@@ -14,7 +14,7 @@ function MultiStream (streams, opts) {
   this._drained = false
   this._forwarding = false
   this._current = null
-  this._queue = streams.map(toStreams2)
+  this._queue = (typeof streams === 'function' ? streams : streams.map(toStreams2))
 
   this._next()
 }
@@ -45,9 +45,11 @@ MultiStream.prototype.destroy = function (err) {
   this.destroyed = true
 
   if (this._current && this._current.destroy) this._current.destroy()
-  this._queue.forEach(function (stream) {
-    if (stream.destroy) stream.destroy()
-  })
+  if (typeof this._queue !== 'function') {
+    this._queue.forEach(function (stream) {
+      if (stream.destroy) stream.destroy()
+    })
+  }
 
   if (err) this.emit('error', err)
   this.emit('close')
@@ -55,7 +57,7 @@ MultiStream.prototype.destroy = function (err) {
 
 MultiStream.prototype._next = function () {
   var self = this
-  var stream = self._queue.shift()
+  var stream = (typeof self._queue === 'function' ? self._queue() : self._queue.shift())
 
   if (typeof stream === 'function') stream = toStreams2(stream())
 
