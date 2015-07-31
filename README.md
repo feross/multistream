@@ -56,6 +56,20 @@ var streams = [
 MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
+Alternativelly, streams may be created by a generator function:
+
+```js
+var count = 0;
+var streams = function () {
+  if (count > 3) return false
+  count++
+  return fs.createReadStream(__dirname + '/numbers/' + count + '.txt')
+}
+
+MultiStream(streams).pipe(process.stdout) // => 123
+```
+
+
 ### contributors
 
 - [Feross Aboukhadijeh](http://feross.org)
