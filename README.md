@@ -60,6 +60,7 @@ MultiStream(streams).pipe(process.stdout) // => 123
 
 - [Feross Aboukhadijeh](http://feross.org)
 - [Mathias Buus](https://github.com/mafintosh/)
+- [Yuri Astrakhan](https://github.com/nyurik/)
 
 ### license
 
