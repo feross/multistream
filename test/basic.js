@@ -64,13 +64,14 @@ test('lazy stream creation', function (t) {
 })
 
 test('lazy stream via generator', function (t) {
-  var count = 0;
-  var streams = function() {
-    if (count > 3)
-      return null;
-    count++;
+  var count = 0
+  var streams = function () {
+    if (count > 2) {
+      return null
+    }
+    count++
     return str(count.toString())
-  };
+  }
 
   new MultiStream(streams)
     .on('error', function (err) {
