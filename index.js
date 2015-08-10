@@ -57,9 +57,20 @@ MultiStream.prototype.destroy = function (err) {
 
 MultiStream.prototype._next = function () {
   var self = this
-  var stream = (typeof self._queue === 'function' ? toStreams2(self._queue()) : self._queue.shift())
+  if (typeof self._queue === 'function') {
+    self._queue(function (err, stream) {
+      if (err) return self.destroy(err)
+      self._gotNextStream(toStreams2(stream))
+    })
+  } else {
+    var stream = self._queue.shift()
+    if (typeof stream === 'function') stream = toStreams2(stream())
+    self._gotNextStream(stream)
+  }
+}
 
-  if (typeof stream === 'function') stream = toStreams2(stream())
+MultiStream.prototype._gotNextStream = function (stream) {
+  var self = this
 
   if (!stream) {
     self.destroy()
