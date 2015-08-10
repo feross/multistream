@@ -75,8 +75,8 @@ MultiStream.prototype._gotNextStream = function (stream) {
   var self = this
 
   if (!stream) {
-    self.destroy()
     self.push(null)
+    self.destroy()
     return
   }
 
