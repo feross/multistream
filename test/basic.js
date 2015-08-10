@@ -63,17 +63,15 @@ test('lazy stream creation', function (t) {
     }))
 })
 
-test('lazy stream via generator', function (t) {
+test('lazy stream via factory', function (t) {
   var count = 0
-  var streams = function () {
-    if (count > 2) {
-      return null
-    }
+  function factory (cb) {
+    if (count > 2) return cb(null, null)
     count++
-    return str(count.toString())
+    cb(null, str(count.toString()))
   }
 
-  new MultiStream(streams)
+  new MultiStream(factory)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -83,22 +81,39 @@ test('lazy stream via generator', function (t) {
     }))
 })
 
-test('lazy stream via generator (classic)', function (t) {
+test('lazy stream via factory (factory returns error)', function (t) {
+  t.plan(2)
   var count = 0
-  var streams = function () {
-    if (count > 2) {
-      return null
-    }
+  function factory (cb) {
+    if (count > 2) return cb(new Error('factory error'))
+    count++
+    cb(null, str(count.toString()))
+  }
+
+  new MultiStream(factory)
+    .on('error', function (err) {
+      t.pass('got error', err)
+    })
+    .on('close', function () {
+      t.pass('got close')
+    })
+    .resume()
+})
+
+test('lazy stream via factory (classic)', function (t) {
+  var count = 0
+  function factory (cb) {
+    if (count > 2) return cb(null, null)
     count++
     var s = through()
     process.nextTick(function () {
       s.write(count.toString())
       s.end()
     })
-    return s
+    cb(null, s)
   }
 
-  new MultiStream(streams)
+  new MultiStream(factory)
     .on('error', function (err) {
       t.fail(err)
     })
