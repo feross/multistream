@@ -29,7 +29,7 @@ MultiStream.prototype._read = function () {
 }
 
 MultiStream.prototype._forward = function () {
-  if (this._forwarding || !this._drained) return
+  if (this._forwarding || !this._drained || !this._current) return
   this._forwarding = true
 
   var chunk
@@ -57,6 +57,8 @@ MultiStream.prototype.destroy = function (err) {
 
 MultiStream.prototype._next = function () {
   var self = this
+  self._current = null
+
   if (typeof self._queue === 'function') {
     self._queue(function (err, stream) {
       if (err) return self.destroy(err)
@@ -79,6 +81,7 @@ MultiStream.prototype._gotNextStream = function (stream) {
   }
 
   self._current = stream
+  self._forward()
 
   stream.on('readable', onReadable)
   stream.on('end', onEnd)

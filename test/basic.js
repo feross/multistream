@@ -68,7 +68,9 @@ test('lazy stream via factory', function (t) {
   function factory (cb) {
     if (count > 2) return cb(null, null)
     count++
-    cb(null, str(count.toString()))
+    setTimeout(function () {
+      cb(null, str(count.toString()))
+    }, 0)
   }
 
   new MultiStream(factory)
@@ -87,7 +89,9 @@ test('lazy stream via factory (factory returns error)', function (t) {
   function factory (cb) {
     if (count > 2) return cb(new Error('factory error'))
     count++
-    cb(null, str(count.toString()))
+    setTimeout(function () {
+      cb(null, str(count.toString()))
+    }, 0)
   }
 
   new MultiStream(factory)
