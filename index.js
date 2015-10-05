@@ -1,13 +1,19 @@
 module.exports = MultiStream
 
 var inherits = require('inherits')
-var stream = require('stream')
+var ReadableStream = require('stream').Readable
+var ClientRequest = require('http').ClientRequest
+ClientRequest || (ClientRequest = function () {}) // browser hack
 
-inherits(MultiStream, stream.Readable)
+function isHTTPStream (stream) {
+  return stream && (stream instanceof ClientRequest || (stream._opts && stream._opts.method && stream._opts.path && stream._opts.url)) // browser hack
+}
+
+inherits(MultiStream, ReadableStream)
 
 function MultiStream (streams, opts) {
   if (!(this instanceof MultiStream)) return new MultiStream(streams, opts)
-  stream.Readable.call(this, opts)
+  ReadableStream.call(this, opts)
 
   this.destroyed = false
 
@@ -80,13 +86,19 @@ MultiStream.prototype._gotNextStream = function (stream) {
     return
   }
 
-  self._current = stream
-  self._forward()
+  if (isHTTPStream(stream)) {
+    stream.on('response', function (res) {
+      self._gotNextStream(toStreams2(res))
+    }).end()
+  } else {
+    self._current = stream
+    self._forward()
 
-  stream.on('readable', onReadable)
-  stream.on('end', onEnd)
-  stream.on('error', onError)
-  stream.on('close', onClose)
+    stream.on('readable', onReadable)
+    stream.on('end', onEnd)
+    stream.on('error', onError)
+    stream.on('close', onClose)
+  }
 
   function onReadable () {
     self._forward()
@@ -113,9 +125,9 @@ MultiStream.prototype._gotNextStream = function (stream) {
 }
 
 function toStreams2 (s) {
-  if (!s || typeof s === 'function' || s._readableState) return s
+  if (!s || typeof s === 'function' || s._readableState || isHTTPStream(s)) return s
 
-  var wrap = new stream.Readable().wrap(s)
+  var wrap = new ReadableStream().wrap(s)
   if (s.destroy) {
     wrap.destroy = s.destroy.bind(s)
   }
