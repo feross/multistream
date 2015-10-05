@@ -42,6 +42,32 @@ test('combine streams (classic)', function (t) {
   streams[2].end('3')
 })
 
+test('combine streams (http)', function (t) {
+  var streams = [
+    str('1'),
+    require('https').request('https://avatars1.githubusercontent.com/u/2401029?s=100'),
+    str('2'),
+    require('https').request('https://avatars1.githubusercontent.com/u/1024980?s=100')
+  ]
+  var i = 0
+  new MultiStream(streams)
+    .on('error', function (err) {
+      t.fail(err)
+    })
+    .on('data', function (data) {
+      i++
+      if (i === 1) {
+        t.equal(data.toString(), '1')
+      } else if (i === 3) {
+        t.equal(data.toString(), '2')
+      } else if (i === 2 || i === 4) {
+        t.ok((data[0] === 0xFF && data[1] === 0xD8 && data[2] === 0xFF), 'should be jpg') // magic number
+      }
+    }).on('end', function () {
+      t.end()
+    })
+})
+
 test('lazy stream creation', function (t) {
   var streams = [
     str('1'),
