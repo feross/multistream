@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "concat-stream": "^1.4.6",
-    "standard": "^4.0.0",
+    "standard": "^6.0.4",
     "string-to-stream": "^1.0.0",
     "tape": "^4.0.0",
     "through": "^2.3.4",
