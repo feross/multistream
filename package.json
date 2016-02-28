@@ -1,7 +1,7 @@
 {
   "name": "multistream",
   "description": "A stream that emits multiple other streams one after another (streams2)",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
   "bugs": {
     "url": "https://github.com/feross/multistream/issues"
