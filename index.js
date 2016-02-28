@@ -1,7 +1,7 @@
 module.exports = MultiStream
 
 var inherits = require('inherits')
-var stream = require('stream')
+var stream = require('readable-stream')
 
 inherits(MultiStream, stream.Readable)
 
