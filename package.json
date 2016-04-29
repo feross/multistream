@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "inherits": "^2.0.1",
-    "readable-stream": "^2.0.5"
+    "readable-stream": "^2.1.1"
   },
   "devDependencies": {
     "concat-stream": "^1.4.6",
