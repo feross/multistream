@@ -6,17 +6,26 @@ var stream = require('readable-stream')
 inherits(MultiStream, stream.Readable)
 
 function MultiStream (streams, opts) {
-  if (!(this instanceof MultiStream)) return new MultiStream(streams, opts)
-  stream.Readable.call(this, opts)
+  var self = this
+  if (!(self instanceof MultiStream)) return new MultiStream(streams, opts)
+  stream.Readable.call(self, opts)
 
-  this.destroyed = false
+  self.destroyed = false
 
-  this._drained = false
-  this._forwarding = false
-  this._current = null
-  this._queue = (typeof streams === 'function' ? streams : streams.map(toStreams2))
+  self._drained = false
+  self._forwarding = false
+  self._current = null
 
-  this._next()
+  if (typeof streams === 'function') {
+    self._queue = streams
+  } else {
+    self._queue = streams.map(toStreams2)
+    self._queue.forEach(function (stream) {
+      if (typeof stream !== 'function') self._attachErrorListener(stream)
+    })
+  }
+
+  self._next()
 }
 
 MultiStream.obj = function (streams) {
@@ -62,11 +71,16 @@ MultiStream.prototype._next = function () {
   if (typeof self._queue === 'function') {
     self._queue(function (err, stream) {
       if (err) return self.destroy(err)
-      self._gotNextStream(toStreams2(stream))
+      stream = toStreams2(stream)
+      self._attachErrorListener(stream)
+      self._gotNextStream(stream)
     })
   } else {
     var stream = self._queue.shift()
-    if (typeof stream === 'function') stream = toStreams2(stream())
+    if (typeof stream === 'function') {
+      stream = toStreams2(stream())
+      self._attachErrorListener(stream)
+    }
     self._gotNextStream(stream)
   }
 }
@@ -84,9 +98,8 @@ MultiStream.prototype._gotNextStream = function (stream) {
   self._forward()
 
   stream.on('readable', onReadable)
-  stream.on('end', onEnd)
-  stream.on('error', onError)
-  stream.on('close', onClose)
+  stream.once('end', onEnd)
+  stream.once('close', onClose)
 
   function onReadable () {
     self._forward()
@@ -102,12 +115,19 @@ MultiStream.prototype._gotNextStream = function (stream) {
     self._current = null
     stream.removeListener('readable', onReadable)
     stream.removeListener('end', onEnd)
-    stream.removeListener('error', onError)
     stream.removeListener('close', onClose)
     self._next()
   }
+}
+
+MultiStream.prototype._attachErrorListener = function (stream) {
+  var self = this
+  if (!stream) return
+
+  stream.once('error', onError)
 
   function onError (err) {
+    stream.removeListener('error', onError)
     self.destroy(err)
   }
 }
