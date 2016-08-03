@@ -58,7 +58,7 @@ var streams = [
 MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
-Alternativelly, streams may be created by an asyncronous "factory" function:
+Alternatively, streams may be created by an asynchronous "factory" function:
 
 ```js
 var count = 0;
