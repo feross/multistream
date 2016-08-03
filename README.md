@@ -40,6 +40,8 @@ var streams = [
 MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
+You can also create an object-mode stream with `MultiStream.obj(streams)`.
+
 To lazily create the streams, wrap them in a function:
 
 ```js
@@ -56,7 +58,7 @@ var streams = [
 MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
-Alternativelly, streams may be created by an asyncronous "factory" function:
+Alternatively, streams may be created by an asynchronous "factory" function:
 
 ```js
 var count = 0;
