@@ -13,7 +13,7 @@
   "devDependencies": {
     "array-to-stream": "^1.0.0",
     "concat-stream": "^1.4.6",
-    "standard": "^7.0.0",
+    "standard": "*",
     "string-to-stream": "^1.0.0",
     "tape": "^4.0.0",
     "through": "^2.3.4",
