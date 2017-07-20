@@ -32,6 +32,18 @@ MultiStream.obj = function (streams) {
   return new MultiStream(streams, { objectMode: true, highWaterMark: 16 })
 }
 
+MultiStream.prototype.append = function (stream) {
+  if (typeof this._queue === 'function') {
+    throw new Error('Cannot append to a MultiStream that uses a factory function')
+  }
+  if (typeof stream !== 'function') {
+    stream = toStreams2(stream)
+    this._attachErrorListener(stream)
+  }
+  this._queue.push(stream)
+  return this
+}
+
 MultiStream.prototype._read = function () {
   this._drained = true
   this._forward()

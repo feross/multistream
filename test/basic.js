@@ -127,6 +127,46 @@ test('lazy stream via factory (classic)', function (t) {
     }))
 })
 
+test('append stream', function (t) {
+  var streams = [
+    str('1'),
+    function () {
+      return str('2')
+    }
+  ]
+
+  MultiStream(streams)
+    .append(str('3'))
+    .on('error', function (err) {
+      t.fail(err)
+    })
+    .pipe(concat(function (data) {
+      t.equal(data.toString(), '123')
+      t.end()
+    }))
+})
+
+test('append lazy stream', function (t) {
+  var streams = [
+    str('1'),
+    function () {
+      return str('2')
+    }
+  ]
+
+  MultiStream(streams)
+    .append(function () {
+      return str('3')
+    })
+    .on('error', function (err) {
+      t.fail(err)
+    })
+    .pipe(concat(function (data) {
+      t.equal(data.toString(), '123')
+      t.end()
+    }))
+})
+
 test('throw immediate error', function (t) {
   t.plan(1)
 
