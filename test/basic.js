@@ -1,4 +1,4 @@
-var concat = require('concat-stream')
+var concat = require('simple-concat')
 var MultiStream = require('../')
 var str = require('string-to-stream')
 var test = require('tape')
@@ -11,14 +11,16 @@ test('combine streams', function (t) {
     str('3')
   ]
 
-  MultiStream(streams)
+  var stream = MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
-    .pipe(concat(function (data) {
-      t.equal(data.toString(), '123')
-      t.end()
-    }))
+
+  concat(stream, function (err, data) {
+    t.error(err)
+    t.equal(data.toString(), '123')
+    t.end()
+  })
 })
 
 test('combine streams (classic)', function (t) {
@@ -28,14 +30,16 @@ test('combine streams (classic)', function (t) {
     through()
   ]
 
-  MultiStream(streams)
+  var stream = MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
-    .pipe(concat(function (data) {
-      t.equal(data.toString(), '123')
-      t.end()
-    }))
+
+  concat(stream, function (err, data) {
+    t.error(err)
+    t.equal(data.toString(), '123')
+    t.end()
+  })
 
   streams[0].end('1')
   streams[1].end('2')
@@ -53,14 +57,16 @@ test('lazy stream creation', function (t) {
     }
   ]
 
-  MultiStream(streams)
+  var stream = MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
-    .pipe(concat(function (data) {
-      t.equal(data.toString(), '123')
-      t.end()
-    }))
+
+  concat(stream, function (err, data) {
+    t.error(err)
+    t.equal(data.toString(), '123')
+    t.end()
+  })
 })
 
 test('lazy stream via factory', function (t) {
@@ -73,14 +79,16 @@ test('lazy stream via factory', function (t) {
     }, 0)
   }
 
-  MultiStream(factory)
+  var stream = MultiStream(factory)
     .on('error', function (err) {
       t.fail(err)
     })
-    .pipe(concat(function (data) {
-      t.equal(data.toString(), '123')
-      t.end()
-    }))
+
+  concat(stream, function (err, data) {
+    t.error(err)
+    t.equal(data.toString(), '123')
+    t.end()
+  })
 })
 
 test('lazy stream via factory (factory returns error)', function (t) {
@@ -117,14 +125,16 @@ test('lazy stream via factory (classic)', function (t) {
     cb(null, s)
   }
 
-  MultiStream(factory)
+  var stream = MultiStream(factory)
     .on('error', function (err) {
       t.fail(err)
     })
-    .pipe(concat(function (data) {
-      t.equal(data.toString(), '123')
-      t.end()
-    }))
+
+  concat(stream, function (err, data) {
+    t.error(err)
+    t.equal(data.toString(), '123')
+    t.end()
+  })
 })
 
 test('throw immediate error', function (t) {
