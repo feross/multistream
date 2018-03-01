@@ -8,7 +8,5 @@ browsers:
     version: latest
   - name: microsoftedge
     version: latest
-  - name: ie
-    version: latest
-  - name: android
+  - name: iphone
     version: latest
