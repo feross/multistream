@@ -11,13 +11,13 @@
     "readable-stream": "^2.0.5"
   },
   "devDependencies": {
+    "airtap": "0.0.4",
     "array-to-stream": "^1.0.0",
     "simple-concat": "^1.0.0",
     "standard": "*",
     "string-to-stream": "^1.0.0",
     "tape": "^4.0.0",
-    "through": "^2.3.4",
-    "zuul": "^3.0.0"
+    "through": "^2.3.4"
   },
   "homepage": "https://github.com/feross/multistream",
   "keywords": [
@@ -43,8 +43,8 @@
   },
   "scripts": {
     "test": "standard && npm run test-node && npm run test-browser",
-    "test-browser": "zuul -- test/*.js",
-    "test-browser-local": "zuul --local -- test/*.js",
+    "test-browser": "airtap -- test/*.js",
+    "test-browser-local": "airtap --local -- test/*.js",
     "test-node": "tape test/*.js"
   }
 }
