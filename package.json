@@ -11,7 +11,7 @@
     "readable-stream": "^2.0.5"
   },
   "devDependencies": {
-    "airtap": "0.0.4",
+    "airtap": "0.0.5",
     "array-to-stream": "^1.0.0",
     "simple-concat": "^1.0.0",
     "standard": "*",
