@@ -15,7 +15,7 @@ function MultiStream (streams, opts) {
   self._drained = false
   self._forwarding = false
   self._current = null
-  self._toStreams2 = (opts && opts.objectMode) ? toStreams2Obj : toStreams2
+  self._toStreams2 = (opts && opts.objectMode) ? toStreams2Obj : toStreams2Buf
 
   if (typeof streams === 'function') {
     self._queue = streams
@@ -135,6 +135,10 @@ MultiStream.prototype._attachErrorListener = function (stream) {
 
 function toStreams2Obj (s) {
   return toStreams2(s, {objectMode: true, highWaterMark: 16})
+}
+
+function toStreams2Buf (s) {
+  return toStreams2(s)
 }
 
 function toStreams2 (s, opts) {
