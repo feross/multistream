@@ -15,11 +15,12 @@ function MultiStream (streams, opts) {
   self._drained = false
   self._forwarding = false
   self._current = null
+  self._toStreams2 = (opts && opts.objectMode) ? toStreams2Obj : toStreams2Buf
 
   if (typeof streams === 'function') {
     self._queue = streams
   } else {
-    self._queue = streams.map(toStreams2)
+    self._queue = streams.map(self._toStreams2)
     self._queue.forEach(function (stream) {
       if (typeof stream !== 'function') self._attachErrorListener(stream)
     })
@@ -71,14 +72,14 @@ MultiStream.prototype._next = function () {
   if (typeof self._queue === 'function') {
     self._queue(function (err, stream) {
       if (err) return self.destroy(err)
-      stream = toStreams2(stream)
+      stream = self._toStreams2(stream)
       self._attachErrorListener(stream)
       self._gotNextStream(stream)
     })
   } else {
     var stream = self._queue.shift()
     if (typeof stream === 'function') {
-      stream = toStreams2(stream())
+      stream = self._toStreams2(stream())
       self._attachErrorListener(stream)
     }
     self._gotNextStream(stream)
@@ -132,10 +133,18 @@ MultiStream.prototype._attachErrorListener = function (stream) {
   }
 }
 
-function toStreams2 (s) {
+function toStreams2Obj (s) {
+  return toStreams2(s, {objectMode: true, highWaterMark: 16})
+}
+
+function toStreams2Buf (s) {
+  return toStreams2(s)
+}
+
+function toStreams2 (s, opts) {
   if (!s || typeof s === 'function' || s._readableState) return s
 
-  var wrap = new stream.Readable().wrap(s)
+  var wrap = new stream.Readable(opts).wrap(s)
   if (s.destroy) {
     wrap.destroy = s.destroy.bind(s)
   }
