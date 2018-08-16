@@ -39,7 +39,7 @@ var streams = [
   fs.createReadStream(__dirname + '/numbers/3.txt')
 ]
 
-MultiStream(streams).pipe(process.stdout) // => 123
+new MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
 You can also create an object-mode stream with `MultiStream.obj(streams)`.
@@ -57,7 +57,7 @@ var streams = [
   }
 ]
 
-MultiStream(streams).pipe(process.stdout) // => 123
+new MultiStream(streams).pipe(process.stdout) // => 123
 ```
 
 Alternatively, streams may be created by an asynchronous "factory" function:
@@ -72,7 +72,7 @@ function factory (cb) {
   }, 100)
 }
 
-MultiStream(factory).pipe(process.stdout) // => 123
+new MultiStream(factory).pipe(process.stdout) // => 123
 ```
 
 ### contributors
