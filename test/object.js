@@ -3,7 +3,7 @@ var ary = require('array-to-stream')
 var test = require('tape')
 
 test('combine object streams', function (t) {
-  var objects = [true, {x: 'b'}, 'c', 'd', 'e', 'f']
+  var objects = [true, { x: 'b' }, 'c', 'd', 'e', 'f']
 
   var streams = [
     ary(objects.slice(0, 2)),

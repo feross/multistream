@@ -134,7 +134,7 @@ MultiStream.prototype._attachErrorListener = function (stream) {
 }
 
 function toStreams2Obj (s) {
-  return toStreams2(s, {objectMode: true, highWaterMark: 16})
+  return toStreams2(s, { objectMode: true, highWaterMark: 16 })
 }
 
 function toStreams2Buf (s) {
