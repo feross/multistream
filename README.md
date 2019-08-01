@@ -9,13 +9,13 @@
 [standard-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
 [standard-url]: https://standardjs.com
 
-#### A stream that emits multiple other streams one after another (streams2)
+#### A stream that emits multiple other streams one after another (streams3)
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/multistream.svg)](https://saucelabs.com/u/multistream)
 
 ![cat](https://raw.githubusercontent.com/feross/multistream/master/img.jpg)
 
-Simple, robust streams2 version of [combined-stream](https://www.npmjs.org/package/combined-stream). Allows you to combine multiple streams into a single stream. When the first stream ends, the next one starts, and so on, until all streams are consumed.
+Simple, robust streams3 version of [combined-stream](https://www.npmjs.org/package/combined-stream). Allows you to combine multiple streams into a single stream. When the first stream ends, the next one starts, and so on, until all streams are consumed.
 
 This module is used by [WebTorrent](http://webtorrent.io), specifically [create-torrent](https://github.com/feross/create-torrent).
 
