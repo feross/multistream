@@ -1,6 +1,6 @@
 {
   "name": "multistream",
-  "description": "A stream that emits multiple other streams one after another (streams2)",
+  "description": "A stream that emits multiple other streams one after another (streams3)",
   "version": "3.0.0",
   "author": "Feross Aboukhadijeh <feross@feross.org> (http://feross.org/)",
   "bugs": {
