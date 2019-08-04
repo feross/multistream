@@ -43,7 +43,7 @@ MultiStream.prototype._forward = function () {
   this._forwarding = true
 
   var chunk
-  while ((chunk = this._current.read()) !== null) {
+  while ((chunk = this._current.read()) !== null && this._drained) {
     this._drained = this.push(chunk)
   }
 
