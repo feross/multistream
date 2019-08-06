@@ -11,7 +11,7 @@ test('combine streams', function (t) {
     str('3')
   ]
 
-  var stream = MultiStream(streams)
+  var stream = new MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -30,7 +30,7 @@ test('combine streams (classic)', function (t) {
     through()
   ]
 
-  var stream = MultiStream(streams)
+  var stream = new MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -57,7 +57,7 @@ test('lazy stream creation', function (t) {
     }
   ]
 
-  var stream = MultiStream(streams)
+  var stream = new MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -79,7 +79,7 @@ test('lazy stream via factory', function (t) {
     }, 0)
   }
 
-  var stream = MultiStream(factory)
+  var stream = new MultiStream(factory)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -102,7 +102,7 @@ test('lazy stream via factory (factory returns error)', function (t) {
     }, 0)
   }
 
-  MultiStream(factory)
+  new MultiStream(factory)
     .on('error', function (err) {
       t.pass('got error', err)
     })
@@ -125,7 +125,7 @@ test('lazy stream via factory (classic)', function (t) {
     cb(null, s)
   }
 
-  var stream = MultiStream(factory)
+  var stream = new MultiStream(factory)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -145,7 +145,7 @@ test('throw immediate error', function (t) {
     through() // will emit 'error'
   ]
 
-  MultiStream(streams).on('error', function (err) {
+  new MultiStream(streams).on('error', function (err) {
     t.ok(err instanceof Error, 'got expected error')
   })
 

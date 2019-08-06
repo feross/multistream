@@ -63,7 +63,7 @@ new MultiStream(streams).pipe(process.stdout) // => 123
 Alternatively, streams may be created by an asynchronous "factory" function:
 
 ```js
-var count = 0;
+var count = 0
 function factory (cb) {
   if (count > 3) return cb(null, null)
   count++
