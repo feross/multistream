@@ -24,8 +24,7 @@ class MultiStream extends stream.Readable {
 
     this.destroyed = false
 
-    this._drained = false
-    this._forwarding = false
+    this._pending = 0
     this._current = null
     this._toStreams2 = (opts && opts.objectMode) ? toStreams2Obj : toStreams2Buf
 
@@ -41,21 +40,18 @@ class MultiStream extends stream.Readable {
     this._next()
   }
 
-  _read () {
-    this._drained = true
-    this._forward()
-  }
-
-  _forward () {
-    if (this._forwarding || !this._drained || !this._current) return
-    this._forwarding = true
-
-    var chunk
-    while ((chunk = this._current.read()) !== null && this._drained) {
-      this._drained = this.push(chunk)
+  _read (n) {
+    if (this.destroyed || n === 0) {
+      return
     }
 
-    this._forwarding = false
+    const chunk = this._current ? this._current.read() : null
+    if (chunk != null) {
+      this.push(chunk)
+      this._pending = 0
+    } else {
+      this._pending = n
+    }
   }
 
   destroy (err) {
@@ -101,10 +97,10 @@ class MultiStream extends stream.Readable {
     }
 
     this._current = stream
-    this._forward()
+    this._read(this._pending)
 
     const onReadable = () => {
-      this._forward()
+      this._read(this._pending)
     }
 
     const onClose = () => {
