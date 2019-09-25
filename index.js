@@ -1,4 +1,5 @@
 var stream = require('readable-stream')
+var once = require('once')
 
 function toStreams2Obj (s) {
   return toStreams2(s, { objectMode: true, highWaterMark: 16 })
@@ -20,9 +21,7 @@ function toStreams2 (s, opts) {
 
 class MultiStream extends stream.Readable {
   constructor (streams, opts) {
-    super(opts)
-
-    this.destroyed = false
+    super({ ...opts, autoDestroy: true })
 
     this._drained = false
     this._forwarding = false
@@ -58,19 +57,25 @@ class MultiStream extends stream.Readable {
     this._forwarding = false
   }
 
-  destroy (err) {
-    if (this.destroyed) return
-    this.destroyed = true
+  _destroy (err, cb) {
+    cb = once(cb)
 
-    if (this._current && this._current.destroy) this._current.destroy()
-    if (typeof this._queue !== 'function') {
-      this._queue.forEach(stream => {
-        if (stream.destroy) stream.destroy()
+    let streams = []
+    if (this._current) streams.push(this._current)
+    if (typeof this._queue !== 'function') streams = streams.concat(this._queue)
+
+    if (streams.length === 0) {
+      cb(err)
+    } else {
+      let counter = streams.length
+      streams.forEach(stream => {
+        destroy(stream, err, err => {
+          if (err || --counter === 0) {
+            cb(err)
+          }
+        })
       })
     }
-
-    if (err) this.emit('error', err)
-    this.emit('close')
   }
 
   _next () {
@@ -96,7 +101,6 @@ class MultiStream extends stream.Readable {
   _gotNextStream (stream) {
     if (!stream) {
       this.push(null)
-      this.destroy()
       return
     }
 
@@ -108,8 +112,13 @@ class MultiStream extends stream.Readable {
     }
 
     const onClose = () => {
-      if (!stream._readableState.ended) {
-        this.destroy()
+      const readableEnded =
+        (stream._readableState && stream._readableState.ended) ||
+        stream.readableEnded
+      if (!readableEnded && !stream.destroyed) {
+        const err = new Error('ERR_STREAM_PREMATURE_CLOSE')
+        err.code = 'ERR_STREAM_PREMATURE_CLOSE'
+        this.destroy(err)
       }
     }
 
@@ -118,6 +127,7 @@ class MultiStream extends stream.Readable {
       stream.removeListener('readable', onReadable)
       stream.removeListener('end', onEnd)
       stream.removeListener('close', onClose)
+      stream.destroy()
       this._next()
     }
 
@@ -143,3 +153,16 @@ MultiStream.obj = streams => (
 )
 
 module.exports = MultiStream
+
+// Normalize stream destroy w/ callback.
+function destroy (stream, err, cb) {
+  if (!stream.destroy) {
+    cb(err)
+  } else {
+    const callback = once(er => cb(er || err))
+    stream
+      .on('error', callback)
+      .on('close', callback)
+      .destroy(err, callback)
+  }
+}

@@ -7,6 +7,7 @@
     "url": "https://github.com/feross/multistream/issues"
   },
   "dependencies": {
+    "once": "^1.4.0",
     "readable-stream": "^3.4.0"
   },
   "devDependencies": {
