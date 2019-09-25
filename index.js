@@ -156,7 +156,7 @@ module.exports = MultiStream
 
 // Normalize stream destroy w/ callback.
 function destroy (stream, err, cb) {
-  if (!stream.destroy) {
+  if (!stream.destroy || stream.destroyed) {
     cb(err)
   } else {
     const callback = once(er => cb(er || err))
