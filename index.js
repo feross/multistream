@@ -112,10 +112,7 @@ class MultiStream extends stream.Readable {
     }
 
     const onClose = () => {
-      const readableEnded =
-        (stream._readableState && stream._readableState.ended) ||
-        stream.readableEnded
-      if (!readableEnded && !stream.destroyed) {
+      if (!stream._readableState.ended && !stream.destroyed) {
         const err = new Error('ERR_STREAM_PREMATURE_CLOSE')
         err.code = 'ERR_STREAM_PREMATURE_CLOSE'
         this.destroy(err)
