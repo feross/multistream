@@ -58,8 +58,6 @@ class MultiStream extends stream.Readable {
   }
 
   _destroy (err, cb) {
-    cb = once(cb)
-
     let streams = []
     if (this._current) streams.push(this._current)
     if (typeof this._queue !== 'function') streams = streams.concat(this._queue)
@@ -68,10 +66,12 @@ class MultiStream extends stream.Readable {
       cb(err)
     } else {
       let counter = streams.length
+      let er = err
       streams.forEach(stream => {
         destroy(stream, err, err => {
-          if (err || --counter === 0) {
-            cb(err)
+          er = er || err
+          if (--counter === 0) {
+            cb(er)
           }
         })
       })
