@@ -70,7 +70,10 @@ class MultiStream extends stream.Readable {
     }
 
     if (err) this.emit('error', err)
-    this.emit('close')
+
+    process.nextTick(() => {
+      this.emit('close')
+    })
   }
 
   _next () {
