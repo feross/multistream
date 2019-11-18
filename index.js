@@ -51,7 +51,7 @@ class MultiStream extends stream.Readable {
     this._forwarding = true
 
     var chunk
-    while ((chunk = this._current.read()) !== null && this._drained) {
+    while (this._drained && (chunk = this._current.read()) !== null) {
       this._drained = this.push(chunk)
     }
 
