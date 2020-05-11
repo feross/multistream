@@ -13,7 +13,7 @@
     "airtap": "^2.0.3",
     "array-to-stream": "^1.0.0",
     "simple-concat": "^1.0.0",
-    "standard": "*",
+    "standard": ">=14.3.4",
     "string-to-stream": "^3.0.0",
     "tape": "^4.0.0",
     "through": "^2.3.4"
