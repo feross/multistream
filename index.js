@@ -1,3 +1,4 @@
+/*! multistream. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 var stream = require('readable-stream')
 
 function toStreams2Obj (s) {
