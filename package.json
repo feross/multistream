@@ -15,7 +15,7 @@
     "simple-concat": "^1.0.0",
     "standard": "*",
     "string-to-stream": "^3.0.0",
-    "tape": "^4.0.0",
+    "tape": "^5.0.0",
     "through": "^2.3.4"
   },
   "homepage": "https://github.com/feross/multistream",
