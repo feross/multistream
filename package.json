@@ -7,16 +7,16 @@
     "url": "https://github.com/feross/multistream/issues"
   },
   "dependencies": {
-    "readable-stream": "^3.4.0"
+    "readable-stream": "^3.6.0"
   },
   "devDependencies": {
     "airtap": "^3.0.0",
-    "array-to-stream": "^1.0.0",
-    "simple-concat": "^1.0.0",
+    "array-to-stream": "^1.0.2",
+    "simple-concat": "^1.0.1",
     "standard": "*",
-    "string-to-stream": "^3.0.0",
-    "tape": "^5.0.0",
-    "through": "^2.3.4"
+    "string-to-stream": "^3.0.1",
+    "tape": "^5.0.1",
+    "through": "^2.3.8"
   },
   "homepage": "https://github.com/feross/multistream",
   "keywords": [
