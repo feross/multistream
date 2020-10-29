@@ -1,5 +1,5 @@
 /*! multistream. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
-var stream = require('readable-stream')
+const stream = require('readable-stream')
 
 function toStreams2Obj (s) {
   return toStreams2(s, { objectMode: true, highWaterMark: 16 })
@@ -12,7 +12,7 @@ function toStreams2Buf (s) {
 function toStreams2 (s, opts) {
   if (!s || typeof s === 'function' || s._readableState) return s
 
-  var wrap = new stream.Readable(opts).wrap(s)
+  const wrap = new stream.Readable(opts).wrap(s)
   if (s.destroy) {
     wrap.destroy = s.destroy.bind(s)
   }
@@ -51,7 +51,7 @@ class MultiStream extends stream.Readable {
     if (this._forwarding || !this._drained || !this._current) return
     this._forwarding = true
 
-    var chunk
+    let chunk
     while (this._drained && (chunk = this._current.read()) !== null) {
       this._drained = this.push(chunk)
     }
@@ -85,7 +85,7 @@ class MultiStream extends stream.Readable {
         this._gotNextStream(stream)
       })
     } else {
-      var stream = this._queue.shift()
+      let stream = this._queue.shift()
       if (typeof stream === 'function') {
         stream = this._toStreams2(stream())
         this._attachErrorListener(stream)

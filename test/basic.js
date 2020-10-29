@@ -1,17 +1,17 @@
-var concat = require('simple-concat')
-var MultiStream = require('../')
-var str = require('string-to-stream')
-var test = require('tape')
-var through = require('through')
+const concat = require('simple-concat')
+const MultiStream = require('../')
+const str = require('string-to-stream')
+const test = require('tape')
+const through = require('through')
 
 test('combine streams', function (t) {
-  var streams = [
+  const streams = [
     str('1'),
     str('2'),
     str('3')
   ]
 
-  var stream = new MultiStream(streams)
+  const stream = new MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -24,13 +24,13 @@ test('combine streams', function (t) {
 })
 
 test('combine streams (classic)', function (t) {
-  var streams = [
+  const streams = [
     through(),
     through(),
     through()
   ]
 
-  var stream = new MultiStream(streams)
+  const stream = new MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -47,7 +47,7 @@ test('combine streams (classic)', function (t) {
 })
 
 test('lazy stream creation', function (t) {
-  var streams = [
+  const streams = [
     str('1'),
     function () {
       return str('2')
@@ -57,7 +57,7 @@ test('lazy stream creation', function (t) {
     }
   ]
 
-  var stream = new MultiStream(streams)
+  const stream = new MultiStream(streams)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -70,7 +70,7 @@ test('lazy stream creation', function (t) {
 })
 
 test('lazy stream via factory', function (t) {
-  var count = 0
+  let count = 0
   function factory (cb) {
     if (count > 2) return cb(null, null)
     count++
@@ -79,7 +79,7 @@ test('lazy stream via factory', function (t) {
     }, 0)
   }
 
-  var stream = new MultiStream(factory)
+  const stream = new MultiStream(factory)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -93,7 +93,7 @@ test('lazy stream via factory', function (t) {
 
 test('lazy stream via factory (factory returns error)', function (t) {
   t.plan(2)
-  var count = 0
+  let count = 0
   function factory (cb) {
     if (count > 2) return cb(new Error('factory error'))
     count++
@@ -113,11 +113,11 @@ test('lazy stream via factory (factory returns error)', function (t) {
 })
 
 test('lazy stream via factory (classic)', function (t) {
-  var count = 0
+  let count = 0
   function factory (cb) {
     if (count > 2) return cb(null, null)
     count++
-    var s = through()
+    const s = through()
     process.nextTick(function () {
       s.write(count.toString())
       s.end()
@@ -125,7 +125,7 @@ test('lazy stream via factory (classic)', function (t) {
     cb(null, s)
   }
 
-  var stream = new MultiStream(factory)
+  const stream = new MultiStream(factory)
     .on('error', function (err) {
       t.fail(err)
     })
@@ -140,7 +140,7 @@ test('lazy stream via factory (classic)', function (t) {
 test('throw immediate error', function (t) {
   t.plan(1)
 
-  var streams = [
+  const streams = [
     str('1'),
     through() // will emit 'error'
   ]
