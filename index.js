@@ -159,7 +159,7 @@ function destroy (stream, err, cb) {
     const callback = once(er => cb(er || err))
     stream
       .on('error', callback)
-      .on('close', callback)
+      .on('close', () => callback()))
       .destroy(err, callback)
   }
 }
