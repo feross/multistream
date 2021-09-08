@@ -75,6 +75,24 @@ function factory (cb) {
 new MultiStream(factory).pipe(process.stdout) // => 123
 ```
 
+Async iterator support:
+
+```js
+const delay = require('util').promisify(setTimeout)
+const fs = require('fs')
+
+async function * generate() {
+  yield fs.createReadStream(__dirname + '/numbers/1.txt')
+  yield fs.createReadStream(__dirname + '/numbers/2.txt')
+  
+  await delay(1000)
+
+  yield fs.createReadStream(__dirname + '/numbers/3.txt') 
+}
+
+new MultiStream(generate()).pipe(process.stdout)
+```
+
 ### contributors
 
 - [Feross Aboukhadijeh](http://feross.org)

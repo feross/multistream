@@ -151,3 +151,23 @@ test('throw immediate error', function (t) {
 
   streams[1].emit('error', new Error('immediate error!'))
 })
+
+test('async iterator', function (t) {
+
+  async function * generate () {
+    yield str('1')
+    yield str('2')
+    yield str('3')
+  }
+
+  const stream = new MultiStream(generate())
+    .on('error', function (err) {
+      t.fail(err)
+    })
+
+  concat(stream, function (err, data) {
+    t.error(err)
+    t.equal(data.toString(), '123')
+    t.end()
+  })
+})
