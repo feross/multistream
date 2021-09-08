@@ -2,6 +2,10 @@
 const stream = require('readable-stream')
 const once = require('once')
 
+function isAsyncIterator (obj) {
+  return typeof obj[Symbol.asyncIterator] === 'function'
+}
+
 function toStreams2Obj (s) {
   return toStreams2(s, { objectMode: true, highWaterMark: 16 })
 }
@@ -29,13 +33,13 @@ class MultiStream extends stream.Readable {
     this._current = null
     this._toStreams2 = (opts && opts.objectMode) ? toStreams2Obj : toStreams2Buf
 
-    if (typeof streams === 'function') {
-      this._queue = streams
-    } else {
+    if (streams instanceof Array) {
       this._queue = streams.map(this._toStreams2)
       this._queue.forEach(stream => {
         if (typeof stream !== 'function') this._attachErrorListener(stream)
       })
+    } else {
+      this._queue = streams
     }
 
     this._next()
@@ -61,7 +65,7 @@ class MultiStream extends stream.Readable {
   _destroy (err, cb) {
     let streams = []
     if (this._current) streams.push(this._current)
-    if (typeof this._queue !== 'function') streams = streams.concat(this._queue)
+    if (this._queue instanceof Array) streams = streams.concat(this._queue)
 
     if (streams.length === 0) {
       cb(err)
@@ -82,6 +86,29 @@ class MultiStream extends stream.Readable {
   _next () {
     this._current = null
 
+    if (this._queue instanceof Array) {
+      let stream = this._queue.shift()
+      if (typeof stream === 'function') {
+        stream = this._toStreams2(stream())
+        this._attachErrorListener(stream)
+      }
+      this._gotNextStream(stream)
+      return
+    }
+
+    if (isAsyncIterator(this._queue)) {
+      this._queue.next().then(({ value, done }) => {
+        if (done) {
+          this.push(null)
+        } else {
+          const stream = this._toStreams2(value)
+          this._attachErrorListener(stream)
+          this._gotNextStream(stream)
+        }
+      }).catch(err => this.destroy(err))
+      return
+    }
+
     if (typeof this._queue === 'function') {
       this._queue((err, stream) => {
         if (err) return this.destroy(err)
@@ -89,13 +116,6 @@ class MultiStream extends stream.Readable {
         this._attachErrorListener(stream)
         this._gotNextStream(stream)
       })
-    } else {
-      let stream = this._queue.shift()
-      if (typeof stream === 'function') {
-        stream = this._toStreams2(stream())
-        this._attachErrorListener(stream)
-      }
-      this._gotNextStream(stream)
     }
   }
 
